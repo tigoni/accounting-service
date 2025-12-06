@@ -108,13 +108,4 @@ VALUES
     -- Other Expenses
     ('501-93-XX', 'Miscellaneous Expenses', 8, NULL, 'Other sundry expenses', 'system', gen_random_uuid());
 
-
-
--- UPDATE accounts 
--- SET child_account_id = (SELECT id FROM accounts WHERE account_number = '101-01-01' LIMIT 1)
--- WHERE account_number = '101-01-XX';
-
--- UPDATE accounts 
--- SET child_account_id = (SELECT id FROM accounts WHERE account_number = '101-03-01' LIMIT 1)
--- WHERE account_number = '101-03-XX';
 COMMIT;
