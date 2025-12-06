@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS accounts (
     created_by VARCHAR(255) NOT NULL,
     uuid VARCHAR(255) NOT NULL,
     parent_account_id BIGINT,
-    CONSTRAINT fk_parent_account_id FOREIGN KEY (parent_account_id) REFERENCES accounts(id),
-    CONSTRAINT fk_account_type_id FOREIGN KEY (account_type_id) REFERENCES account_types(account_id) ON DELETE CASCADE
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_parent_account_id FOREIGN KEY (parent_account_id) REFERENCES accounts(id) ON DELETE NO ACTION,
+    CONSTRAINT fk_account_type_id FOREIGN KEY (account_type_id) REFERENCES account_types(account_id) ON DELETE NO ACTION 
 );
 
