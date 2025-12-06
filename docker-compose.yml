@@ -30,7 +30,7 @@ services:
     depends_on:
       - accounting-db-server
     ports:
-      - "8081:8081"
+      - "8080:8080"
     networks:
       - acc-network
 volumes:

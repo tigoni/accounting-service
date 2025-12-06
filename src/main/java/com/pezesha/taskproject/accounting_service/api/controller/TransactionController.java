@@ -3,18 +3,14 @@ package com.pezesha.taskproject.accounting_service.api.controller;
 import com.pezesha.taskproject.accounting_service.internal.utils.ApiStrings;
 import com.pezesha.taskproject.accounting_service.api.dto.TransactionRequestDto;
 import com.pezesha.taskproject.accounting_service.api.dto.TransactionResponseDto;
-import com.pezesha.taskproject.accounting_service.api.controller.ApiResponse;
-import com.pezesha.taskproject.accounting_service.internal.entity.Transaction;
 import com.pezesha.taskproject.accounting_service.internal.service.TransactionService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

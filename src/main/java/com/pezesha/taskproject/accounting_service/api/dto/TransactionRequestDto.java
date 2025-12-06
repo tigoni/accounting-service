@@ -24,11 +24,6 @@ public class TransactionRequestDto {
   private String reference;
   @NotEmpty(message = "Transaction lines are required")
   private List<TransactionLineDto> transactionLines;
-
-  @NotNull(message = "Transaction date is required")
-  @PastOrPresent(message = "Transaction date cannot be in the future")
-  private LocalDateTime transactionDate;
-
   // @NotBlank(message = "Currency symbol is required")
   // private String currencySymbol;
 }

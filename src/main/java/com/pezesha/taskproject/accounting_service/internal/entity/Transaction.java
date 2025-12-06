@@ -19,7 +19,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.OnDelete;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @NoArgsConstructor
@@ -28,13 +27,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "transactions")
 public class Transaction extends BaseEntityAudit {
-
-  @Column(nullable = false)
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private LocalDateTime transactionDate;
-
-  @Column(unique = true)
-  private String transactionReference;
 
   @Column(length = 3)
   private String currency;
@@ -53,7 +45,4 @@ public class Transaction extends BaseEntityAudit {
   private Account account;
 
   private String description;
-  private String status;
-  private BigDecimal amount;
-
 }

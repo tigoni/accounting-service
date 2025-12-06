@@ -12,9 +12,11 @@ import org.hibernate.annotations.OnDelete;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,13 +25,21 @@ import lombok.ToString;
 @Table(name = "transaction_lines")
 public class TransactionLine extends BaseEntityAudit {
 
-  private String lineDescription;
-
   @ManyToOne
   @JoinColumn(name = "transaction_id", nullable = false)
   @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private Transaction transaction;
 
+
+  @ManyToOne
+  @JoinColumn(name = "debit_account_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.NO_ACTION)
+  private Account debitAccount;
+
+  @ManyToOne
+  @JoinColumn(name = "credit_account_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.NO_ACTION)
+  private Account creditAccount;
 
   @Builder.Default
   @Column(precision = 18, scale = 2)

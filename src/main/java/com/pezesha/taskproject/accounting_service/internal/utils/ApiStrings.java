@@ -8,7 +8,7 @@ public class ApiStrings {
   }
 
   // Routes
-  public static final String ROOT_PATH = "/api/bookeeper/v1/";
+  public static final String ROOT_PATH = "/accounts/api/";
 
   // Transaction uris
   public static final String CREATE_TRANSACTION = ROOT_PATH + "transaction";

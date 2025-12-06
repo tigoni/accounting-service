@@ -1,6 +1,7 @@
 package com.pezesha.taskproject.accounting_service.internal.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -33,7 +34,7 @@ public abstract class BaseEntityAudit extends BaseEntity {
 
   @LastModifiedBy private String updatedBy;
 
-  @UuidGenerator private String uuid;
+  @UuidGenerator private UUID uuid;
 
   @CreationTimestamp
   @Column(name = "created_at", updatable = false)
