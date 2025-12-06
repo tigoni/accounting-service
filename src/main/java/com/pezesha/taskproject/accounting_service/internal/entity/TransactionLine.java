@@ -32,14 +32,9 @@ public class TransactionLine extends BaseEntityAudit {
 
 
   @ManyToOne
-  @JoinColumn(name = "debit_account_id")
+  @JoinColumn(name = "account_id")
   @OnDelete(action = org.hibernate.annotations.OnDeleteAction.NO_ACTION)
-  private Account debitAccount;
-
-  @ManyToOne
-  @JoinColumn(name = "credit_account_id")
-  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.NO_ACTION)
-  private Account creditAccount;
+  private Account account;
 
   @Builder.Default
   @Column(precision = 18, scale = 2)

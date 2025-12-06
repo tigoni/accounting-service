@@ -36,10 +36,7 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
         .map(lineDto -> TransactionLine.builder()
             .creditAmount(lineDto.getCreditAmount())
             .debitAmount(lineDto.getDebitAmount())
-            .creditAccount(
-                getAccountByName(lineDto.getCreditAccount()))
-            .debitAccount(
-                getAccountByName(lineDto.getDebitAccount()))
+            .account(getAccountByName(lineDto.getAccountId()))
             .build())
         .collect(Collectors.toList());
 
@@ -52,7 +49,6 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
     try {
       Transaction result = repository.save(newTransaction);
       return TransactionResponseDto.builder()
-          .accountUuid(result.getUuid().toString())
           .description(result.getDescription())
           .lines(null)
           // .lines(
@@ -71,6 +67,7 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
 
   // method to get account id from account name
   private Account getAccountByName(String accountName) {
+    System.out.println("Fetching account for name: " + accountName);
     com.pezesha.taskproject.accounting_service.internal.entity.Account account = accountRepository
         .findByAccountName(accountName);
     if (account == null) {

@@ -31,6 +31,8 @@ public class TransactionController {
   public ResponseEntity<ApiResponse<TransactionResponseDto>> create(@RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
     try{
+      log.debug("Creating ransaction with accoounts and lines: {}", transactionDto.getTransactionLines().stream()
+          .map(line -> line.getAccountId()).toList());
       transactionResponseDto = transactionService.createTransaction(transactionDto);
     } catch (EntityNotFoundException e) {
       log.error("Error creating transaction", e);

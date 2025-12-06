@@ -15,13 +15,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class TransactionLineDto {
 
-  @NotBlank(message = "Debit account id is required")
-  @Size(min = 3, max = 30, message = "Code must be min 3 chars and max 30 chars")
-  private String debitAccount;
-
   @Size(min = 3, max = 30, message = "Code must be min 3 chars and max 30 chars")
   @NotBlank(message = "Credit account id is required")
-  private String creditAccount;
+  private String accountId;
 
   @NotNull(message = "Either debit amount or credit amount must be provided")
   private BigDecimal debitAmount;

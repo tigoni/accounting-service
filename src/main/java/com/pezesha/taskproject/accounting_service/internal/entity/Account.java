@@ -23,6 +23,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "accounts")
 public class Account extends BaseEntityAudit {
 
+  protected Long id;
   protected String accountNumber;
   protected String accountName;
   protected String accountDescription;

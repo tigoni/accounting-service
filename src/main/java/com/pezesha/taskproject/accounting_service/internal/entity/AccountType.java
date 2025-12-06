@@ -1,7 +1,8 @@
 package com.pezesha.taskproject.accounting_service.internal.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "account_types")
+@AttributeOverride(name = "id", column = @Column(name = "account_id"))
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

@@ -34,8 +34,6 @@ public abstract class BaseEntityAudit extends BaseEntity {
 
   @LastModifiedBy private String updatedBy;
 
-  @UuidGenerator private UUID uuid;
-
   @CreationTimestamp
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;

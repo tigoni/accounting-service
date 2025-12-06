@@ -23,9 +23,6 @@ public class BasicService<T extends BaseEntityAudit, U extends JpaRepository<T, 
     return repository.findById(id);
   }
 
-  public Optional<T> findByUuid(String uuid) {
-    return repository.findAll().stream().filter(e -> e.getUuid().equals(uuid)).findFirst();
-  }
 
   public List<T> findAll() {
     return repository.findAll();
