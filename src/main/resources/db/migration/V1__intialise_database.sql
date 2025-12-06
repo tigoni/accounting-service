@@ -32,10 +32,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     account_type_id BIGINT NOT NULL,
     account_description TEXT,
     created_by VARCHAR(255) NOT NULL,
-    updated_by VARCHAR(255),
     uuid VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     parent_account_id BIGINT,
     CONSTRAINT fk_parent_account_id FOREIGN KEY (parent_account_id) REFERENCES accounts(id),
     CONSTRAINT fk_account_type_id FOREIGN KEY (account_type_id) REFERENCES account_types(account_id) ON DELETE CASCADE
