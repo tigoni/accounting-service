@@ -22,6 +22,7 @@ public class ApiStrings {
       ROOT_PATH + "{groupUuid}/reports/balance-sheet";
   public static final String URI_REPORTS_TRIAL_BALANCE =
       ROOT_PATH + "{groupUuid}/reports/trial-balance";
+  public static final String ACCOUNT_BALANCE = ROOT_PATH + "/accounts/{accountName}/balance";
   // Error messages
   public static final String ERROR_ACCOUNT_NOT_FOUND = "Account not found";
   public static final String ERROR_CREATE_JOURNAL_ENTRY = "Error creating journal entry";

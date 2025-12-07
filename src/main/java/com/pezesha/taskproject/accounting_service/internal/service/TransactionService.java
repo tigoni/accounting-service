@@ -149,11 +149,10 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
         .build();
   }
 
-  // method to get account from account name
   private Account getAccountByName(String accountName) {
     System.out.println("Fetching account for name: " + accountName);
-    Account account = accountRepository
-        .findByAccountName(accountName);
+    String normalizedAccountName = accountName.replace('-', ' ');
+    Account account = accountRepository.findByAccountNameIgnoreCase(normalizedAccountName);
     if (account == null) {
       throw new EntityNotFoundException("Account not found: " + accountName);
     }
