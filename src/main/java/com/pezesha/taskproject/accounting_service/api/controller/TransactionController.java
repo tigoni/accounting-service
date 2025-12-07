@@ -30,7 +30,7 @@ public class TransactionController {
 
 
   @PostMapping(ApiStrings.LOAN_DISBURSEMENT)
-  public ResponseEntity<ApiResponse<TransactionResponseDto>> disburseLoan(@RequestBody @Valid TransactionRequestDto transactionDto) {
+  public ResponseEntity<ApiResponse<TransactionResponseDto>> create(@RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
     try{
       log.debug("Creating ransaction with accoounts and lines: {}", transactionDto.getTransactionLines().stream()
@@ -49,7 +49,7 @@ public class TransactionController {
 
 
   @PostMapping(ApiStrings.LOAN_REVERSAL)
-public ResponseEntity<ApiResponse<TransactionResponseDto>> reverseLoan(
+public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
     @PathVariable String idempotencyKey) {
     try {
         TransactionResponseDto response = transactionService.reverseTransaction(idempotencyKey);
@@ -84,6 +84,26 @@ public ResponseEntity<ApiResponse<TransactionResponseDto>> reverseLoan(
     }
     return new ResponseEntity<>(new ApiResponse<>(
         true, "Loan repayment transaction created successfully", transactionResponseDto, null),
+        HttpStatus.CREATED);
+  }
+
+  @PostMapping(ApiStrings.LOAN_WRITEOFF)
+  public ResponseEntity<ApiResponse<TransactionResponseDto>> writeOffLoan(
+      @PathVariable String idempotencyKey,
+      @RequestBody @Valid TransactionRequestDto transactionDto) {
+    TransactionResponseDto transactionResponseDto = null;
+    try {
+      log.debug("Creating loan write-off transaction with accounts and lines: {}", transactionDto.getTransactionLines().stream()
+          .map(line -> line.getAccountId()).toList());
+      transactionResponseDto = transactionService.createTransaction(transactionDto);
+    } catch (EntityNotFoundException e) {
+      log.error("Error creating loan write-off transaction", e);
+      return new ResponseEntity<>(new ApiResponse<>(
+          false, "Error creating loan write-off transaction", null, List.of(e.getMessage())),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>(new ApiResponse<>(
+        true, "Loan write-off transaction created successfully", transactionResponseDto, null),
         HttpStatus.CREATED);
   }
 }
