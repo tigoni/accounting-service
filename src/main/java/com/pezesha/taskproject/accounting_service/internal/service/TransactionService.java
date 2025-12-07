@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -35,7 +34,13 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
     super(transactionRepository);
   }
 
-  public TransactionResponseDto createTransaction(TransactionRequestDto transactionDto) {
+  /**
+   * Create a transaction
+   * @param transactionDto
+   * @return TransactionResponseDto
+   * @throws TransactionSaveException
+   */
+  public TransactionResponseDto createTransaction(TransactionRequestDto transactionDto) throws TransactionSaveException {
     Optional<Transaction> existingTransaction = repository.findByIdempotencyKey(transactionDto.getIdempotencyKey());
     if (existingTransaction.isPresent()) {
       log.info("Transaction with idempotency key {} already exists. Returning existing transaction.",
@@ -72,6 +77,16 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
     }
   }
 
+
+  /**
+   * Reverse a transaction
+   * If the transaction has already been reversed, return the existing reversal transaction
+   * If the transaction has not been reversed, create a new reversal transaction
+   * @param idempotencyKey
+   * @return TransactionResponseDto
+   * @throws TransactionSaveException
+   * @throws EntityNotFoundException
+   */ 
   public TransactionResponseDto reverseTransaction(String idempotencyKey) {
     Transaction originalTransaction = repository.findByIdempotencyKey(idempotencyKey)
         .orElseThrow(() -> new EntityNotFoundException("Transaction not found: " + idempotencyKey));
@@ -137,7 +152,7 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
   // method to get account from account name
   private Account getAccountByName(String accountName) {
     System.out.println("Fetching account for name: " + accountName);
-    com.pezesha.taskproject.accounting_service.internal.entity.Account account = accountRepository
+    Account account = accountRepository
         .findByAccountName(accountName);
     if (account == null) {
       throw new EntityNotFoundException("Account not found: " + accountName);
