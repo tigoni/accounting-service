@@ -12,7 +12,7 @@ public class ApiStrings {
 
   // Transaction uris
   public static final String CREATE_TRANSACTION = ROOT_PATH + "transaction";
-
+  public static final String REVERSE_TRANSACTION = ROOT_PATH + "transaction/{idempotencyKey}/reverse";
   // Report uris
   public static final String URI_REPORTS_INCOME_STATEMENT =
       ROOT_PATH + "reports/income-statement/{groupUuid}";

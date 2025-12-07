@@ -13,6 +13,7 @@ import com.pezesha.taskproject.accounting_service.internal.repository.Transactio
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,16 +39,8 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
       log.info("Transaction with idempotency key {} already exists. Returning existing transaction.",
           transactionDto.getIdempotencyKey());
       Transaction result = existingTransaction.get();
-      return TransactionResponseDto.builder()
-          .lines(
-          result.getLines().stream()
-          .map(line -> TransactionLineDto.builder()
-              .creditAmount(line.getCreditAmount())
-              .debitAmount(line.getDebitAmount())
-              .accountId(line.getAccount().getAccountName())
-              .build())
-          .collect(Collectors.toList()))
-          .build();
+      return mapToResponseDto(result);
+
     }
 
     // build transaction entity from dto
@@ -67,23 +60,68 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
     lines.forEach(line -> line.setTransaction(newTransaction));
     try {
       Transaction result = repository.save(newTransaction);
-      return TransactionResponseDto.builder()
-          .idempotencyKey(result.getIdempotencyKey())
-          .description(result.getDescription())
-          .date(result.getCreatedAt())
-          .lines(
-          result.getLines().stream()
-          .map(line -> TransactionLineDto.builder()
-          .creditAmount(line.getCreditAmount())
-          .debitAmount(line.getDebitAmount())
-          .build())
-          .collect(Collectors.toList()))
-          .build();
+      return mapToResponseDto(result);
     } catch (Exception e) {
       log.error("Error saving transaction", e);
-      throw new TransactionSaveException("Failed to save transaction");
+      throw new TransactionSaveException("Failed to save transaction" );
     }
   }
+
+
+  public TransactionResponseDto reverseTransaction(String idempotencyKey) {
+    Transaction originalTransaction = repository.findByIdempotencyKey(idempotencyKey)
+        .orElseThrow(() -> new EntityNotFoundException("Transaction not found: " + idempotencyKey));
+    
+    if (originalTransaction.getReversedAt() != null) {
+        throw new TransactionSaveException("Transaction already reversed");
+    }
+    
+    String reversalIdempotencyKey = idempotencyKey + "_REVERSED";
+    Optional<Transaction> existingReversal = repository.findByIdempotencyKey(reversalIdempotencyKey);
+    if (existingReversal.isPresent()) {
+        return mapToResponseDto(existingReversal.get());
+    }
+    
+    List<TransactionLine> reversalLines = originalTransaction.getLines().stream()
+        .map(originalLine -> TransactionLine.builder()
+            .account(originalLine.getAccount())
+            .debitAmount(originalLine.getCreditAmount())
+            .creditAmount(originalLine.getDebitAmount())
+            .build())
+        .collect(Collectors.toList());
+    
+    Transaction reversalTransaction = Transaction.builder()
+        .idempotencyKey(reversalIdempotencyKey)
+        .description("Reversal of: " + originalTransaction.getDescription())
+        .reversedTransaction(originalTransaction)
+        .lines(reversalLines)
+        .build();
+    
+    reversalLines.forEach(line -> line.setTransaction(reversalTransaction));
+    
+    Transaction savedReversal = repository.save(reversalTransaction);
+    
+    originalTransaction.setReversedAt(LocalDateTime.now());
+    originalTransaction.setReversedTransaction(savedReversal);
+    repository.save(originalTransaction);
+    
+    return mapToResponseDto(savedReversal);
+}
+
+private TransactionResponseDto mapToResponseDto(Transaction transaction) {
+    return TransactionResponseDto.builder()
+        .idempotencyKey(transaction.getIdempotencyKey())
+        .description(transaction.getDescription())
+        .date(transaction.getCreatedAt())
+        .lines(transaction.getLines().stream()
+            .map(line -> TransactionLineDto.builder()
+                .creditAmount(line.getCreditAmount())
+                .debitAmount(line.getDebitAmount())
+                .accountId(line.getAccount().getAccountName())
+                .build())
+            .collect(Collectors.toList()))
+        .build();
+}
 
   // method to get account from account name
   private Account getAccountByName(String accountName) {
