@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "transactions")
 public class Transaction extends BaseEntityAudit {
+
+  @Version
+  @Column(name = "version", nullable = false)
+  private Long version;
 
   private String description;
   @Column(unique = true)
@@ -48,4 +53,6 @@ private Transaction reversedTransaction;
 
 @Column(name = "reversed_at")
 private LocalDateTime reversedAt;
+
+
 }

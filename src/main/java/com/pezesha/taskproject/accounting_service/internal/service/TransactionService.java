@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -61,27 +63,29 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
     try {
       Transaction result = repository.save(newTransaction);
       return mapToResponseDto(result);
+    } catch (OptimisticLockingFailureException e) {
+      log.error("Optimistic lock exception", e);
+      throw new TransactionSaveException("Transaction has been modified by another user. Please try again.");
     } catch (Exception e) {
       log.error("Error saving transaction", e);
-      throw new TransactionSaveException("Failed to save transaction" );
+      throw new TransactionSaveException("Failed to save transaction");
     }
   }
-
 
   public TransactionResponseDto reverseTransaction(String idempotencyKey) {
     Transaction originalTransaction = repository.findByIdempotencyKey(idempotencyKey)
         .orElseThrow(() -> new EntityNotFoundException("Transaction not found: " + idempotencyKey));
-    
+
     if (originalTransaction.getReversedAt() != null) {
-        throw new TransactionSaveException("Transaction already reversed");
+      throw new TransactionSaveException("Transaction already reversed");
     }
-    
+
     String reversalIdempotencyKey = idempotencyKey + "_REVERSED";
     Optional<Transaction> existingReversal = repository.findByIdempotencyKey(reversalIdempotencyKey);
     if (existingReversal.isPresent()) {
-        return mapToResponseDto(existingReversal.get());
+      return mapToResponseDto(existingReversal.get());
     }
-    
+
     List<TransactionLine> reversalLines = originalTransaction.getLines().stream()
         .map(originalLine -> TransactionLine.builder()
             .account(originalLine.getAccount())
@@ -89,26 +93,33 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
             .creditAmount(originalLine.getDebitAmount())
             .build())
         .collect(Collectors.toList());
-    
+
     Transaction reversalTransaction = Transaction.builder()
         .idempotencyKey(reversalIdempotencyKey)
         .description("Reversal of: " + originalTransaction.getDescription())
         .reversedTransaction(originalTransaction)
         .lines(reversalLines)
         .build();
-    
-    reversalLines.forEach(line -> line.setTransaction(reversalTransaction));
-    
-    Transaction savedReversal = repository.save(reversalTransaction);
-    
-    originalTransaction.setReversedAt(LocalDateTime.now());
-    originalTransaction.setReversedTransaction(savedReversal);
-    repository.save(originalTransaction);
-    
-    return mapToResponseDto(savedReversal);
-}
 
-private TransactionResponseDto mapToResponseDto(Transaction transaction) {
+    reversalLines.forEach(line -> line.setTransaction(reversalTransaction));
+
+    try {
+      Transaction savedReversal = repository.save(reversalTransaction);
+      originalTransaction.setReversedAt(LocalDateTime.now());
+      originalTransaction.setReversedTransaction(savedReversal);
+      repository.save(originalTransaction);
+      return mapToResponseDto(savedReversal);
+    } catch (OptimisticLockingFailureException e) {
+      log.error("Optimistic lock exception", e);
+      throw new TransactionSaveException("Transaction has been modified by another user. Please try again.");
+    } catch (Exception e) {
+      log.error("Error saving transaction", e);
+      throw new TransactionSaveException("Failed to save transaction");
+    }
+
+  }
+
+  private TransactionResponseDto mapToResponseDto(Transaction transaction) {
     return TransactionResponseDto.builder()
         .idempotencyKey(transaction.getIdempotencyKey())
         .description(transaction.getDescription())
@@ -121,7 +132,7 @@ private TransactionResponseDto mapToResponseDto(Transaction transaction) {
                 .build())
             .collect(Collectors.toList()))
         .build();
-}
+  }
 
   // method to get account from account name
   private Account getAccountByName(String accountName) {
