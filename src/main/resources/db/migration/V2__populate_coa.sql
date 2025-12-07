@@ -37,7 +37,9 @@ VALUES
     ('101-10-XX', 'Accounts Receivable', 1, NULL, 'Amounts owed by customers for goods/services', 'system'),
     ('101-11-XX', 'Loans Receivable - Short Term', 1, 1, 'Loans to be collected within one year', 'system'),
     ('101-12-XX', 'Member Loans Receivable', 1, 1, 'Loans disbursed to members', 'system'),
-    ('101-13-XX', 'Interest Receivable', 1, 1, 'Accrued interest not yet collected', 'system');
+    ('101-13-XX', 'Interest Receivable', 1, 1, 'Accrued interest not yet collected', 'system'),
+    ('101-14-XX', 'Loan Origination Fee Receivable', 1, 1, 'Loan Fees not yet collected', 'system');
+
 
 
 -- Liabilities (Account Type 3 = Current Liabilities, Type 4 = Long-term Liabilities)

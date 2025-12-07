@@ -29,8 +29,8 @@ public class TransactionController {
   }
 
 
-  @PostMapping(ApiStrings.CREATE_TRANSACTION)
-  public ResponseEntity<ApiResponse<TransactionResponseDto>> create(@RequestBody @Valid TransactionRequestDto transactionDto) {
+  @PostMapping(ApiStrings.LOAN_DISBURSEMENT)
+  public ResponseEntity<ApiResponse<TransactionResponseDto>> disburseLoan(@RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
     try{
       log.debug("Creating ransaction with accoounts and lines: {}", transactionDto.getTransactionLines().stream()
@@ -48,8 +48,8 @@ public class TransactionController {
   }
 
 
-  @PostMapping(ApiStrings.REVERSE_TRANSACTION)
-public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
+  @PostMapping(ApiStrings.LOAN_REVERSAL)
+public ResponseEntity<ApiResponse<TransactionResponseDto>> reverseLoan(
     @PathVariable String idempotencyKey) {
     try {
         TransactionResponseDto response = transactionService.reverseTransaction(idempotencyKey);
@@ -66,6 +66,26 @@ public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
             HttpStatus.BAD_REQUEST);
     }
 }
+
+  @PostMapping(ApiStrings.LOAN_REPAYMENT)
+  public ResponseEntity<ApiResponse<TransactionResponseDto>> repayLoan(
+      @PathVariable String idempotencyKey,
+      @RequestBody @Valid TransactionRequestDto transactionDto) {
+    TransactionResponseDto transactionResponseDto = null;
+    try {
+      log.debug("Creating loan repayment transaction with accounts and lines: {}", transactionDto.getTransactionLines().stream()
+          .map(line -> line.getAccountId()).toList());
+      transactionResponseDto = transactionService.createTransaction(transactionDto);
+    } catch (EntityNotFoundException e) {
+      log.error("Error creating loan repayment transaction", e);
+      return new ResponseEntity<>(new ApiResponse<>(
+          false, "Error creating loan repayment transaction", null, List.of(e.getMessage())),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>(new ApiResponse<>(
+        true, "Loan repayment transaction created successfully", transactionResponseDto, null),
+        HttpStatus.CREATED);
+  }
 }
 
   

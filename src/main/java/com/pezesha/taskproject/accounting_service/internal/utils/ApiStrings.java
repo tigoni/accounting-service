@@ -8,11 +8,13 @@ public class ApiStrings {
   }
 
   // Routes
-  public static final String ROOT_PATH = "/accounts/api/";
+  public static final String ROOT_PATH = "/accounts/api/loans";
 
   // Transaction uris
-  public static final String CREATE_TRANSACTION = ROOT_PATH + "transaction";
-  public static final String REVERSE_TRANSACTION = ROOT_PATH + "transaction/{idempotencyKey}/reverse";
+  public static final String LOAN_DISBURSEMENT = ROOT_PATH + "/disbursement";
+  public static final String LOAN_REVERSAL = ROOT_PATH + "/{idempotencyKey}/reversal";
+  public static final String LOAN_REPAYMENT = ROOT_PATH + "/{idempotencyKey}/repayment";
+  public static final String LOAN_WRITEOFF = ROOT_PATH + "/{idempotencyKey}/writeoff";
   // Report uris
   public static final String URI_REPORTS_INCOME_STATEMENT =
       ROOT_PATH + "reports/income-statement/{groupUuid}";
