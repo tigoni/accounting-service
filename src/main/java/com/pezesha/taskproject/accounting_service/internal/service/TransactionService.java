@@ -60,6 +60,7 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
         .collect(Collectors.toList());
 
     Transaction newTransaction = Transaction.builder()
+        .idempotencyKey(transactionDto.getIdempotencyKey())
         .lines(lines)
         .description(transactionDto.getDescription())
         .build();
@@ -67,7 +68,9 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
     try {
       Transaction result = repository.save(newTransaction);
       return TransactionResponseDto.builder()
+          .idempotencyKey(result.getIdempotencyKey())
           .description(result.getDescription())
+          .date(result.getCreatedAt())
           .lines(
           result.getLines().stream()
           .map(line -> TransactionLineDto.builder()

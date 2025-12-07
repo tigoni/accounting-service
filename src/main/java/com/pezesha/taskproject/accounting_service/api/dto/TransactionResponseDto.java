@@ -19,12 +19,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class TransactionResponseDto {
   private LocalDateTime date;
+  private String idempotencyKey;
   private String description;
-  private String reference;
-  private String accountUuid;
   private String accountName;
   private BigDecimal balance;
-  private String balanceType;
-  private String balanceDate;
   private java.util.List<TransactionLineDto> lines;
 }
