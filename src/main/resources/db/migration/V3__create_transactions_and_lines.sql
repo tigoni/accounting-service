@@ -6,18 +6,16 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS transactions (
     id BIGSERIAL PRIMARY KEY,
-    created_by VARCHAR(255),
-    updated_by VARCHAR(255),
-    uuid UUID NOT NULL DEFAULT gen_random_uuid(),
+    created_by VARCHAR(255) DEFAULT 'system',
+    updated_by VARCHAR(255) DEFAULT 'system',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    idempotency_key VARCHAR(255) UNIQUE,
     currency CHAR(3),
-    account_id BIGINT,
     description TEXT
 );
-
--- Indexes to speed queries
-CREATE INDEX IF NOT EXISTS idx_transactions_account_id ON transactions(account_id);
+-- Index for faster lookup by idempotency_key
+CREATE INDEX IF NOT EXISTS idx_transactions_idempotency_key ON transactions(idempotency_key);
 
 CREATE TABLE IF NOT EXISTS transaction_lines (
     id BIGSERIAL PRIMARY KEY,
