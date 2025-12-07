@@ -44,9 +44,12 @@ public class TransactionHistoryService {
       throw new EntityNotFoundException("Account not found: " + accountName);
     }
 
+    LocalDateTime effectiveStartDate = startDate != null ? startDate : LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+    LocalDateTime effectiveEndDate = endDate != null ? endDate : LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+    
     Pageable pageable = PageRequest.of(page, size);
     Page<TransactionLine> transactionLinesPage = transactionLineRepository.findByAccountIdWithDateRange(
-        account.getId(), startDate, endDate, pageable);
+        account.getId(), effectiveStartDate, effectiveEndDate, pageable);
 
     BigDecimal openingBalance = calculateOpeningBalance(account, startDate);
     List<TransactionHistoryItemDto> transactions = buildTransactionHistory(

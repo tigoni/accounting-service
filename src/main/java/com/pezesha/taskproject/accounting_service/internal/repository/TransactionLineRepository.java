@@ -40,8 +40,8 @@ public interface TransactionLineRepository extends JpaRepository<TransactionLine
   @Query("SELECT tl FROM TransactionLine tl " +
          "WHERE tl.account.id = :accountId " +
          "AND tl.transaction.reversedAt IS NULL " +
-         "AND (:startDate IS NULL OR tl.createdAt >= :startDate) " +
-         "AND (:endDate IS NULL OR tl.createdAt <= :endDate) " +
+         "AND tl.createdAt >= :startDate " +
+         "AND tl.createdAt <= :endDate " +
          "ORDER BY tl.createdAt DESC, tl.id DESC")
   Page<TransactionLine> findByAccountIdWithDateRange(
       @Param("accountId") Long accountId,

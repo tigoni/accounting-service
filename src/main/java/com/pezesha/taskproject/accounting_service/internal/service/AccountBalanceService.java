@@ -5,6 +5,7 @@ import com.pezesha.taskproject.accounting_service.internal.entity.Account;
 import com.pezesha.taskproject.accounting_service.internal.entity.AccountType;
 import com.pezesha.taskproject.accounting_service.internal.repository.AccountRepository;
 import com.pezesha.taskproject.accounting_service.internal.repository.TransactionLineRepository;
+import com.pezesha.taskproject.accounting_service.internal.utils.Utils;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class AccountBalanceService {
   private TransactionLineRepository transactionLineRepository;
 
   public AccountBalanceResponseDto getAccountBalance(String accountName, LocalDateTime asOfDate) {
-    String normalizedAccountName = normalizeAccountName(accountName);
+    String normalizedAccountName = Utils.normalizeAccountName(accountName);
     Account account = accountRepository.findByAccountNameIgnoreCase(normalizedAccountName);
     if (account == null) {
       throw new EntityNotFoundException("Account not found: " + accountName);
@@ -60,13 +61,6 @@ public class AccountBalanceService {
     } else {
       return creditTotal.subtract(debitTotal);
     }
-  }
-
-  private String normalizeAccountName(String accountName) {
-    if (accountName == null) {
-      return null;
-    }
-    return accountName.replace('-', ' ');
   }
 }
 
