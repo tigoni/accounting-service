@@ -19,6 +19,7 @@ public class ApiStrings {
   // Report uris
   public static final String ACCOUNT_BALANCE = ROOT_PATH + "/accounts/{accountName}/balance";
   public static final String ACCOUNT_TRANSACTION_HISTORY = ROOT_PATH + "/accounts/{accountName}/transactions";
+  public static final String TRIAL_BALANCE = ROOT_PATH + "/reports/trial-balance";
 
   // Error messages
   public static final String ERROR_ACCOUNT_NOT_FOUND = "Account not found";

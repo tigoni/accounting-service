@@ -2,6 +2,7 @@ package com.pezesha.taskproject.accounting_service.internal.repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,5 +49,13 @@ public interface TransactionLineRepository extends JpaRepository<TransactionLine
       @Param("startDate") LocalDateTime startDate,
       @Param("endDate") LocalDateTime endDate,
       Pageable pageable);
+
+  @Query("SELECT tl.account.id, " +
+         "COALESCE(SUM(tl.debitAmount), 0) as debitTotal, " +
+         "COALESCE(SUM(tl.creditAmount), 0) as creditTotal " +
+         "FROM TransactionLine tl " +
+         "WHERE tl.transaction.reversedAt IS NULL " +
+         "GROUP BY tl.account.id")
+  List<Object[]> getAccountBalances();
 }
 
