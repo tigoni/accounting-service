@@ -8,26 +8,21 @@ public class ApiStrings {
   }
 
   // Routes
-  public static final String ROOT_PATH = "/accounts/api/loans";
+  public static final String ROOT_PATH = "/api/v1/acc-service";
 
   // Transaction uris
-  public static final String LOAN_DISBURSEMENT = ROOT_PATH + "/disbursement";
-  public static final String LOAN_REVERSAL = ROOT_PATH + "/{idempotencyKey}/reversal";
-  public static final String LOAN_REPAYMENT = ROOT_PATH + "/{idempotencyKey}/repayment";
-  public static final String LOAN_WRITEOFF = ROOT_PATH + "/{idempotencyKey}/writeoff";
+  public static final String LOAN_DISBURSEMENT = ROOT_PATH + "/loans/disbursement";
+  public static final String LOAN_REVERSAL = ROOT_PATH + "/loans/{idempotencyKey}/reversal";
+  public static final String LOAN_REPAYMENT = ROOT_PATH + "/loans/{idempotencyKey}/repayment";
+  public static final String LOAN_WRITEOFF = ROOT_PATH + "/loans/{idempotencyKey}/writeoff";
+
   // Report uris
-  public static final String URI_REPORTS_INCOME_STATEMENT =
-      ROOT_PATH + "reports/income-statement/{groupUuid}";
-  public static final String URI_REPORTS_BALANCE_SHEET =
-      ROOT_PATH + "{groupUuid}/reports/balance-sheet";
-  public static final String URI_REPORTS_TRIAL_BALANCE =
-      ROOT_PATH + "{groupUuid}/reports/trial-balance";
   public static final String ACCOUNT_BALANCE = ROOT_PATH + "/accounts/{accountName}/balance";
+  public static final String ACCOUNT_TRANSACTION_HISTORY = ROOT_PATH + "/accounts/{accountName}/transactions";
+
   // Error messages
   public static final String ERROR_ACCOUNT_NOT_FOUND = "Account not found";
   public static final String ERROR_CREATE_JOURNAL_ENTRY = "Error creating journal entry";
   public static final String ERROR_JOURNAL_ENTRY_NOT_FOUND = "Journal entry not found";
   public static final String ERROR_CREATE_LEDGER_ENTRY = "Error creating ledger entry";
-  public static final String ERROR_GROUP_EXISTS =
-      "Group with the email or uuid already registered for this service";
 }
