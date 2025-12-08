@@ -120,7 +120,7 @@ curl -X GET "http://localhost:8080/api/v1/acc-service/reports/balance-sheet?asOf
 
 ## Some Notes on Task Implementation
 1. I have tried to reduce complexity and therefore did not wire up a Kafka pipeline + consumers which is ideally how I would process these endpoint requests.
-2. I dockerized the project. To run and test, clone and run `docker compose up --build`. The dDB will be setup and migrations triggered.  I have also included a Postmant collection(`AccountingService_Postman_Collection.json`) that can be imported into Postman ready for testing.
+2. I dockerized the project. To run and test, clone and run `docker compose up --build`. The DB will be setup and migrations triggered.  I have also included a Postmant collection(`AccountingService_Postman_Collection.json`) that can be imported into Postman ready for testing.
 3. Although the job description specifically mentions PHP and/or Go as the desired languages, I asked (emailed) to do the implementation in Java as I have used it extensively in implementing similar accounting domain requirements.
 4. I do have experience in Go but for middleware development (cache, routing etc). My goal is to adapt this project in Go and hopefully submit for evaluation in time for review.
 
