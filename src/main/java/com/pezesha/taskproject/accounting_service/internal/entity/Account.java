@@ -26,6 +26,7 @@ public class Account extends BaseEntityAudit {
   protected Long id;
   protected String accountNumber;
   protected String accountName;
+  protected String normalizedName;
   protected String accountDescription;
 
   @ManyToOne

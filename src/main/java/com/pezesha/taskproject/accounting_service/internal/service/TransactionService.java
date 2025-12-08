@@ -9,6 +9,7 @@ import com.pezesha.taskproject.accounting_service.internal.entity.Transaction;
 import com.pezesha.taskproject.accounting_service.internal.entity.TransactionLine;
 import com.pezesha.taskproject.accounting_service.internal.repository.AccountRepository;
 import com.pezesha.taskproject.accounting_service.internal.repository.TransactionRepository;
+import com.pezesha.taskproject.accounting_service.internal.utils.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -151,8 +152,8 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
 
   private Account getAccountByName(String accountName) {
     System.out.println("Fetching account for name: " + accountName);
-    String normalizedAccountName = accountName.replace('-', ' ');
-    Account account = accountRepository.findByAccountNameIgnoreCase(normalizedAccountName);
+    String normalizedName = Utils.normalizeAccountName(accountName);
+    Account account = accountRepository.findByNormalizedName(normalizedName);
     if (account == null) {
       throw new EntityNotFoundException("Account not found: " + accountName);
     }

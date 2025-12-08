@@ -9,4 +9,5 @@ import com.pezesha.taskproject.accounting_service.internal.entity.Account;
 public interface AccountRepository extends JpaRepository<Account, Long> {
   Account findByAccountName(String accountName);
   Account findByAccountNameIgnoreCase(String accountName);
+  Account findByNormalizedName(String normalizedName);
 }
