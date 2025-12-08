@@ -1,0 +1,292 @@
+{
+	"info": {
+		"_postman_id": "c91307da-2d03-4857-8e5e-e872e6e1974f",
+		"name": "Accounting Service Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5780339"
+	},
+	"item": [
+		{
+			"name": "Loan Disbursement",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idempotencyKey\": \"LOAN-DISBURSE-12345\",\n    \"description\": \"Loan disbursement with origination fee\",\n    \"reference\": \"LOAN-REF-12345\",\n    \"transactionLines\": [\n        {\n            \"accountId\": \"loans-receivable - short-term\",\n            \"debitAmount\": 10000,\n            \"creditAmount\": null\n        },\n        {\n            \"accountId\": \"m-pesa-account\",\n            \"debitAmount\": null,\n            \"creditAmount\": 10000\n        },\n        {\n            \"accountId\": \"loan-origination-fee-receivable\",\n            \"debitAmount\": 500,\n            \"creditAmount\": null\n        },\n        {\n            \"accountId\": \"fee-income-loan-processing\",\n            \"debitAmount\": null,\n            \"creditAmount\": 500\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/loans/disbursement",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"loans",
+						"disbursement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Loan Disbursement Reverse",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idempotencyKey\": \"LOAN-DISBURSE-REVERSE-12345\",\n    \"description\":\"Loan disbursement\",\n    \"reference\":\"powe923\",\n    \"transactionLines\": [\n        {\n            \"accountingId\": \"Loans Receivable - Short Term\",\n            \"debitAmount\": \"10000\",\n            \"creditAmount\": \"0\"\n        },\n        {\n            \"accountingId\": \"Mpesa Account\",\n            \"debitAmount\": \"0\",\n            \"creditAmount\": \"10000\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/accounts/api/loans/disbursement-loan-12345/reversal",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"accounts",
+						"api",
+						"loans",
+						"disbursement-loan-12345",
+						"reversal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Loan Repayment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idempotencyKey\": \"LOAN-REPAY-12345\",\n    \"description\":\"Loan Repayment\",\n    \"reference\":\"powe923\",\n    \"transactionLines\": [\n        {\n            \"accountId\": \"Cash in Bank Operating Account\",\n            \"debitAmount\": \"1200\",\n            \"creditAmount\": \"0\"\n        },\n        {\n            \"accountId\": \"Loans Receivable Short Term\",\n            \"debitAmount\": \"0\",\n            \"creditAmount\": \"1000\"\n        },\n                {\n            \"accountId\": \"Interest Income Loans\",\n            \"debitAmount\": \"0\",\n            \"creditAmount\": \"200\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/loans/loan-12345/repayment",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"loans",
+						"loan-12345",
+						"repayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Loan Writeoff",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idempotencyKey\": \"LOAN-WRITEOFF-12345\",\n    \"description\":\"Loan disbursement\",\n    \"reference\":\"powe923\",\n    \"transactionLines\": [\n        {\n            \"accountId\": \"Loans Receivable - Short Term\",\n            \"debitAmount\": \"0\",\n            \"creditAmount\": \"5000\"\n        },\n        {\n            \"accountId\": \"Bad Debt Expense\",\n            \"debitAmount\": \"5000\",\n            \"creditAmount\": \"0\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/accounts/api/loans/loan-12345/writeoff",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"accounts",
+						"api",
+						"loans",
+						"loan-12345",
+						"writeoff"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account Balance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/accounts/accounts-payable/balance",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"accounts",
+						"accounts-payable",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction History",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/accounts/accounts-payable/transactions?page=0&size=20",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"accounts",
+						"accounts-payable",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trial Balance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/reports/trial-balance",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"reports",
+						"trial-balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Balance Sheet",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/reports/balance-sheet",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"reports",
+						"balance-sheet"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		}
+	]
+}
