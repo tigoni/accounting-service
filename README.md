@@ -9,7 +9,7 @@ Clone the repo, then build and run with:
 
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 The service base url is: `http://localhost:8080/api/v1/acc-service/`
