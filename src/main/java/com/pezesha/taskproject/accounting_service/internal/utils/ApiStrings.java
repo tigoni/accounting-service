@@ -12,9 +12,9 @@ public class ApiStrings {
 
   // Transaction uris
   public static final String LOAN_DISBURSEMENT = ROOT_PATH + "/loans/disbursement";
-  public static final String LOAN_REVERSAL = ROOT_PATH + "/loans/{idempotencyKey}/reversal";
-  public static final String LOAN_REPAYMENT = ROOT_PATH + "/loans/{idempotencyKey}/repayment";
-  public static final String LOAN_WRITEOFF = ROOT_PATH + "/loans/{idempotencyKey}/writeoff";
+  public static final String LOAN_REVERSAL = ROOT_PATH + "/loans/{uuid}/reversal";
+  public static final String LOAN_REPAYMENT = ROOT_PATH + "/loans/{uuid}/repayment";
+  public static final String LOAN_WRITEOFF = ROOT_PATH + "/loans/{uuid}/writeoff";
 
   // Report uris
   public static final String ACCOUNT_BALANCE = ROOT_PATH + "/accounts/{accountName}/balance";

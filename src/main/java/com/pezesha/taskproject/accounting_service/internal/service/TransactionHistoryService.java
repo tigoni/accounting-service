@@ -94,6 +94,7 @@ public class TransactionHistoryService {
           
           return TransactionHistoryItemDto.builder()
               .transactionId(line.getTransaction().getId().toString())
+              .uuid(line.getTransaction().getUuid())
               .idempotencyKey(line.getTransaction().getIdempotencyKey())
               .date(line.getCreatedAt())
               .description(line.getTransaction().getDescription())

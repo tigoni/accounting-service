@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,20 +84,20 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
    * Reverse a transaction
    * If the transaction has already been reversed, return the existing reversal transaction
    * If the transaction has not been reversed, create a new reversal transaction
-   * @param idempotencyKey
+   * @param uuid
    * @return TransactionResponseDto
    * @throws TransactionSaveException
    * @throws EntityNotFoundException
    */ 
-  public TransactionResponseDto reverseTransaction(String idempotencyKey) {
-    Transaction originalTransaction = repository.findByIdempotencyKey(idempotencyKey)
-        .orElseThrow(() -> new EntityNotFoundException("Transaction not found: " + idempotencyKey));
+  public TransactionResponseDto reverseTransaction(UUID uuid) {
+    Transaction originalTransaction = repository.findByUuid(uuid)
+        .orElseThrow(() -> new EntityNotFoundException("Transaction not found: " + uuid));
 
     if (originalTransaction.getReversedAt() != null) {
       throw new TransactionSaveException("Transaction already reversed");
     }
 
-    String reversalIdempotencyKey = idempotencyKey + "_REVERSED";
+    String reversalIdempotencyKey = originalTransaction.getIdempotencyKey() + "_REVERSED";
     Optional<Transaction> existingReversal = repository.findByIdempotencyKey(reversalIdempotencyKey);
     if (existingReversal.isPresent()) {
       return mapToResponseDto(existingReversal.get());
@@ -137,6 +138,7 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
 
   private TransactionResponseDto mapToResponseDto(Transaction transaction) {
     return TransactionResponseDto.builder()
+        .uuid(transaction.getUuid())
         .idempotencyKey(transaction.getIdempotencyKey())
         .description(transaction.getDescription())
         .date(transaction.getCreatedAt())

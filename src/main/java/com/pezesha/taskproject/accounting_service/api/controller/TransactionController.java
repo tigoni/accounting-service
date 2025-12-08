@@ -9,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,9 +51,9 @@ public class TransactionController {
 
   @PostMapping(ApiStrings.LOAN_REVERSAL)
 public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
-    @PathVariable String idempotencyKey) {
+    @PathVariable UUID uuid) {
     try {
-        TransactionResponseDto response = transactionService.reverseTransaction(idempotencyKey);
+        TransactionResponseDto response = transactionService.reverseTransaction(uuid);
         return new ResponseEntity<>(
             new ApiResponse<>(true, "Transaction reversed successfully", response, null),
             HttpStatus.CREATED);
@@ -69,7 +70,7 @@ public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
 
   @PostMapping(ApiStrings.LOAN_REPAYMENT)
   public ResponseEntity<ApiResponse<TransactionResponseDto>> repayLoan(
-      @PathVariable String idempotencyKey,
+      @PathVariable UUID uuid,
       @RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
     try {
@@ -89,7 +90,7 @@ public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
 
   @PostMapping(ApiStrings.LOAN_WRITEOFF)
   public ResponseEntity<ApiResponse<TransactionResponseDto>> writeOffLoan(
-      @PathVariable String idempotencyKey,
+      @PathVariable UUID uuid,
       @RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
     try {
