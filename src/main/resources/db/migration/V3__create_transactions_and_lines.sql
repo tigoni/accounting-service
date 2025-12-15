@@ -2,7 +2,6 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 DROP TABLE IF EXISTS transaction_lines CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
-BEGIN;
 
 CREATE TABLE IF NOT EXISTS transactions (
     id BIGSERIAL PRIMARY KEY,
@@ -39,4 +38,3 @@ CREATE TABLE IF NOT EXISTS transaction_lines (
 
 CREATE INDEX IF NOT EXISTS idx_transaction_lines_transaction_id ON transaction_lines(transaction_id);
 
-COMMIT;

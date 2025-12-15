@@ -1,4 +1,3 @@
-BEGIN;
 -- Migration: Populate template tables
 INSERT INTO account_categories (name, description) VALUES
 ('Assets', 'Resources owned by entity.'),
@@ -109,5 +108,3 @@ VALUES
     
     -- Other Expenses
     ('501-93-XX', 'Miscellaneous Expenses', 8, NULL, 'Other sundry expenses', 'system');
-
-COMMIT;
