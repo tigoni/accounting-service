@@ -14,8 +14,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Data
 public class TransactionRequestDto {
-  @NotBlank(message = "Idempotency key is required")  
-  private String idempotencyKey; 
+  // @NotBlank(message = "Idempotency key is required")  
+  // private String idempotencyKey; 
   private String description;
   @NotBlank(message = "Transaction reference is required")
   private String reference;
