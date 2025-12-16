@@ -48,8 +48,12 @@ public class Transaction extends BaseEntityAudit {
   @Column(unique = true)
   private String idempotencyKey;
 
-  @Column(length = 3)
-  private String currency;
+  @Column(length = 3, nullable = false, name = "base_currency", updatable = false)
+  @Builder.Default
+  private String baseCurrency = "USD";
+
+  @Column(name = "transaction_currency", nullable = false, length = 3)
+  private String transactionCurrency;
 
   @JsonManagedReference
   @OneToMany(

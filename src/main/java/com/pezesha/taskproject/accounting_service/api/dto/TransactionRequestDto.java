@@ -21,6 +21,6 @@ public class TransactionRequestDto {
   private String reference;
   @NotEmpty(message = "Transaction lines are required")
   private List<TransactionLineDto> transactionLines;
-  // @NotBlank(message = "Currency symbol is required")
-  // private String currencySymbol;
+  @NotBlank(message = "Transaction currency is required")
+  private String transactionCurrency;
 }

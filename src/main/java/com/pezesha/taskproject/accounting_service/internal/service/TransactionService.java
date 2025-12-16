@@ -63,6 +63,7 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
 
     Transaction newTransaction = Transaction.builder()
         .idempotencyKey(transactionDto.getIdempotencyKey())
+        .transactionCurrency(transactionDto.getTransactionCurrency())
         .lines(lines)
         .description(transactionDto.getDescription())
         .build();
