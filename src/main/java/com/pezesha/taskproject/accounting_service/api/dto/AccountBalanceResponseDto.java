@@ -1,7 +1,7 @@
 package com.pezesha.taskproject.accounting_service.api.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class AccountBalanceResponseDto {
   private BigDecimal debitTotal;
   private BigDecimal creditTotal;
   private BigDecimal balance;
-  private LocalDateTime asOfDate;
+  private LocalDate asOfDate;
   private Boolean isCurrentBalance;
 }
 

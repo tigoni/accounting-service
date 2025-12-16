@@ -11,6 +11,7 @@ import com.pezesha.taskproject.accounting_service.internal.utils.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,14 +45,13 @@ public class TransactionHistoryService {
       throw new EntityNotFoundException("Account not found: " + accountName);
     }
 
-    LocalDateTime effectiveStartDate = startDate != null ? startDate : LocalDateTime.of(1970, 1, 1, 0, 0, 0);
-    LocalDateTime effectiveEndDate = endDate != null ? endDate : LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+    LocalDate effectiveStartDate = startDate != null ? startDate.toLocalDate() : LocalDate.of(1970, 1, 1);
+    LocalDate effectiveEndDate = endDate != null ? endDate.toLocalDate() : LocalDate.of(9999, 12, 31);
     
     Pageable pageable = PageRequest.of(page, size);
     Page<TransactionLine> transactionLinesPage = transactionLineRepository.findByAccountIdWithDateRange(
-        account.getId(), effectiveStartDate, effectiveEndDate, pageable);
-
-    BigDecimal openingBalance = calculateOpeningBalance(account, startDate);
+        account.getId(), effectiveStartDate.atStartOfDay(), effectiveEndDate.atTime(23, 59, 59), pageable);
+    BigDecimal openingBalance = calculateOpeningBalance(account, effectiveStartDate);
     List<TransactionHistoryItemDto> transactions = buildTransactionHistory(
         transactionLinesPage.getContent(), account.getAccountType(), openingBalance);
 
@@ -66,15 +66,15 @@ public class TransactionHistoryService {
         .build();
   }
 
-  private BigDecimal calculateOpeningBalance(Account account, LocalDateTime startDate) {
+  private BigDecimal calculateOpeningBalance(Account account, LocalDate startDate) {
     if (startDate == null) {
       return BigDecimal.ZERO;
     }
 
     BigDecimal debitTotal = transactionLineRepository.sumDebitAmountByAccountIdAndDate(
-        account.getId(), startDate);
+        account.getId(), startDate.atStartOfDay());
     BigDecimal creditTotal = transactionLineRepository.sumCreditAmountByAccountIdAndDate(
-        account.getId(), startDate);
+        account.getId(), startDate.atStartOfDay());
 
     return calculateBalance(account.getAccountType(), debitTotal, creditTotal);
   }

@@ -4,6 +4,8 @@ import com.pezesha.taskproject.accounting_service.api.dto.AccountBalanceResponse
 import com.pezesha.taskproject.accounting_service.internal.service.AccountBalanceService;
 import com.pezesha.taskproject.accounting_service.internal.utils.ApiStrings;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,7 @@ public class AccountBalanceController {
   @GetMapping(ApiStrings.ACCOUNT_BALANCE)
   public ResponseEntity<ApiResponse<AccountBalanceResponseDto>> getAccountBalance(
       @PathVariable String accountName,
-      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime asOfDate) {
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOfDate) {
     try {
       log.debug("Getting account balance for account: {} as of date: {}", accountName, asOfDate);
       AccountBalanceResponseDto balance = accountBalanceService.getAccountBalance(accountName, asOfDate);

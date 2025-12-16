@@ -42,14 +42,13 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
    * @return TransactionResponseDto
    * @throws TransactionSaveException
    */
-  public TransactionResponseDto createTransaction(TransactionRequestDto transactionDto) throws TransactionSaveException {
-    Optional<Transaction> existingTransaction = repository.findByIdempotencyKey(transactionDto.getIdempotencyKey());
+  public TransactionResponseDto createTransaction(String idempotencyKey, TransactionRequestDto transactionDto) throws TransactionSaveException {
+    Optional<Transaction> existingTransaction = repository.findByIdempotencyKey(idempotencyKey);
     if (existingTransaction.isPresent()) {
       log.info("Transaction with idempotency key {} already exists. Returning existing transaction.",
-          transactionDto.getIdempotencyKey());
+          idempotencyKey);
       Transaction result = existingTransaction.get();
       return mapToResponseDto(result);
-
     }
 
     // build transaction entity from dto

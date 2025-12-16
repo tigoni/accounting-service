@@ -8,6 +8,7 @@ import com.pezesha.taskproject.accounting_service.internal.repository.Transactio
 import com.pezesha.taskproject.accounting_service.internal.utils.Utils;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class AccountBalanceService {
   @Autowired
   private TransactionLineRepository transactionLineRepository;
 
-  public AccountBalanceResponseDto getAccountBalance(String accountName, LocalDateTime asOfDate) {
+  public AccountBalanceResponseDto getAccountBalance(String accountName, LocalDate asOfDate) {
     String normalizedAccountName = Utils.normalizeAccountName(accountName);
     Account account = accountRepository.findByAccountNameIgnoreCase(normalizedAccountName);
     if (account == null) {
@@ -34,8 +35,8 @@ public class AccountBalanceService {
     BigDecimal creditTotal;
 
     if (asOfDate != null) {
-      debitTotal = transactionLineRepository.sumDebitAmountByAccountIdAndDate(account.getId(), asOfDate);
-      creditTotal = transactionLineRepository.sumCreditAmountByAccountIdAndDate(account.getId(), asOfDate);
+      debitTotal = transactionLineRepository.sumDebitAmountByAccountIdAndDate(account.getId(), asOfDate.atTime(23, 59,59));
+      creditTotal = transactionLineRepository.sumCreditAmountByAccountIdAndDate(account.getId(), asOfDate.atTime(23, 59,59));
     } else {
       debitTotal = transactionLineRepository.sumDebitAmountByAccountId(account.getId());
       creditTotal = transactionLineRepository.sumCreditAmountByAccountId(account.getId());
@@ -50,7 +51,7 @@ public class AccountBalanceService {
         .debitTotal(debitTotal)
         .creditTotal(creditTotal)
         .balance(balance)
-        .asOfDate(asOfDate != null ? asOfDate : LocalDateTime.now())
+        .asOfDate(asOfDate != null ? asOfDate : LocalDate.now())
         .isCurrentBalance(asOfDate == null)
         .build();
   }

@@ -1,6 +1,7 @@
 package com.pezesha.taskproject.accounting_service.internal.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;

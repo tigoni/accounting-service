@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @Slf4j
@@ -29,54 +29,61 @@ public class TransactionController {
     this.transactionService = transactionTagService;
   }
 
-
   @PostMapping(ApiStrings.LOAN_DISBURSEMENT)
-  public ResponseEntity<ApiResponse<TransactionResponseDto>> create(@RequestBody @Valid TransactionRequestDto transactionDto) {
+  public ResponseEntity<ApiResponse<TransactionResponseDto>> create(@RequestHeader String idempotencyKey,
+      @RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
-    try{
-      log.debug("Creating ransaction with accoounts and lines: {}", transactionDto.getTransactionLines().stream()
+    // check idempotency key is valid
+    if (idempotencyKey == null || idempotencyKey.isBlank()) {
+      return new ResponseEntity<>(new ApiResponse<>(
+          false, "Idempotency key is required", null, List.of("Idempotency key is required")),
+          HttpStatus.BAD_REQUEST);
+    }
+    try {
+      log.debug("Creating transaction with accounts and lines: {}", transactionDto.getTransactionLines().stream()
           .map(line -> line.getAccountId()).toList());
-      transactionResponseDto = transactionService.createTransaction(transactionDto);
+      transactionResponseDto = transactionService.createTransaction(idempotencyKey, transactionDto);
     } catch (EntityNotFoundException e) {
       log.error("Error creating transaction", e);
       return new ResponseEntity<>(new ApiResponse<>(
           false, "Error creating transaction", null, List.of(e.getMessage())),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
-      return new ResponseEntity<>(new ApiResponse<>(
-          true, "Transaction created successfully", transactionResponseDto, null),
-          HttpStatus.CREATED);
+    return new ResponseEntity<>(new ApiResponse<>(
+        true, "Transaction created successfully", transactionResponseDto, null),
+        HttpStatus.CREATED);
   }
 
-
   @PostMapping(ApiStrings.LOAN_REVERSAL)
-public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
-    @PathVariable UUID uuid) {
+  public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
+      @PathVariable UUID uuid) {
     try {
-        TransactionResponseDto response = transactionService.reverseTransaction(uuid);
-        return new ResponseEntity<>(
-            new ApiResponse<>(true, "Transaction reversed successfully", response, null),
-            HttpStatus.CREATED);
+      TransactionResponseDto response = transactionService.reverseTransaction(uuid);
+      return new ResponseEntity<>(
+          new ApiResponse<>(true, "Transaction reversed successfully", response, null),
+          HttpStatus.CREATED);
     } catch (EntityNotFoundException e) {
-        return new ResponseEntity<>(
-            new ApiResponse<>(false, "Transaction not found", null, List.of(e.getMessage())),
-            HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(
+          new ApiResponse<>(false, "Transaction not found", null, List.of(e.getMessage())),
+          HttpStatus.NOT_FOUND);
     } catch (TransactionSaveException e) {
-        return new ResponseEntity<>(
-            new ApiResponse<>(false, e.getMessage(), null, List.of(e.getMessage())),
-            HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(
+          new ApiResponse<>(false, e.getMessage(), null, List.of(e.getMessage())),
+          HttpStatus.BAD_REQUEST);
     }
-}
+  }
 
   @PostMapping(ApiStrings.LOAN_REPAYMENT)
   public ResponseEntity<ApiResponse<TransactionResponseDto>> repayLoan(
+      @RequestHeader String idempotencyKey,
       @PathVariable UUID uuid,
       @RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
     try {
-      log.debug("Creating loan repayment transaction with accounts and lines: {}", transactionDto.getTransactionLines().stream()
-          .map(line -> line.getAccountId()).toList());
-      transactionResponseDto = transactionService.createTransaction(transactionDto);
+      log.debug("Creating loan repayment transaction with accounts and lines: {}",
+          transactionDto.getTransactionLines().stream()
+              .map(line -> line.getAccountId()).toList());
+      transactionResponseDto = transactionService.createTransaction(idempotencyKey, transactionDto);
     } catch (EntityNotFoundException e) {
       log.error("Error creating loan repayment transaction", e);
       return new ResponseEntity<>(new ApiResponse<>(
@@ -90,13 +97,15 @@ public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
 
   @PostMapping(ApiStrings.LOAN_WRITEOFF)
   public ResponseEntity<ApiResponse<TransactionResponseDto>> writeOffLoan(
+      @RequestHeader String idempotencyKey,
       @PathVariable UUID uuid,
       @RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
     try {
-      log.debug("Creating loan write-off transaction with accounts and lines: {}", transactionDto.getTransactionLines().stream()
-          .map(line -> line.getAccountId()).toList());
-      transactionResponseDto = transactionService.createTransaction(transactionDto);
+      log.debug("Creating loan write-off transaction with accounts and lines: {}",
+          transactionDto.getTransactionLines().stream()
+              .map(line -> line.getAccountId()).toList());
+      transactionResponseDto = transactionService.createTransaction(idempotencyKey, transactionDto);
     } catch (EntityNotFoundException e) {
       log.error("Error creating loan write-off transaction", e);
       return new ResponseEntity<>(new ApiResponse<>(
@@ -108,6 +117,3 @@ public ResponseEntity<ApiResponse<TransactionResponseDto>> reverse(
         HttpStatus.CREATED);
   }
 }
-
-  
-
