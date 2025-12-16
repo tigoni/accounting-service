@@ -61,7 +61,7 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
         .collect(Collectors.toList());
 
     Transaction newTransaction = Transaction.builder()
-        .idempotencyKey(transactionDto.getIdempotencyKey())
+        .idempotencyKey(idempotencyKey)
         .transactionCurrency(transactionDto.getTransactionCurrency())
         .lines(lines)
         .description(transactionDto.getDescription())
@@ -113,6 +113,8 @@ public class TransactionService extends BasicService<Transaction, TransactionRep
 
     Transaction reversalTransaction = Transaction.builder()
         .idempotencyKey(reversalIdempotencyKey)
+        .baseCurrency(originalTransaction.getBaseCurrency())
+        .transactionCurrency(originalTransaction.getTransactionCurrency())
         .description("Reversal of: " + originalTransaction.getDescription())
         .reversedTransaction(originalTransaction)
         .lines(reversalLines)

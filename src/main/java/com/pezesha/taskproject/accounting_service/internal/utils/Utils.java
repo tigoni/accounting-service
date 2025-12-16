@@ -5,6 +5,6 @@ public class Utils {
         if (accountName == null) {
             return null;
         }
-        return accountName.replace('-', ' ');
+        return accountName.replace('-', ' ').toLowerCase().trim();
     }
 }
