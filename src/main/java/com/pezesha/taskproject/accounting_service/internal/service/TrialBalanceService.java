@@ -60,6 +60,7 @@ public class TrialBalanceService {
     return totalsMap;
   }
 
+  // Group accounts by their AccountType
   private Map<AccountType, List<TrialBalanceItemDto>> buildGroupedAccounts(
       List<Account> allAccounts, 
       Map<Long, AccountTotals> accountTotalsMap) {
@@ -81,6 +82,7 @@ public class TrialBalanceService {
     return groupedAccounts;
   }
 
+  // Calculate the debit and credit balances for an account
   private TrialBalanceItemDto calculateAccountBalance(Account account, AccountTotals totals) {
     BalancePair balancePair = calculateDebitCreditBalances(account.getAccountType(), totals);
     

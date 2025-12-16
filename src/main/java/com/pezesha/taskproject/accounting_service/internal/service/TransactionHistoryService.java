@@ -40,7 +40,7 @@ public class TransactionHistoryService {
       int size) {
     
     String normalizedAccountName = Utils.normalizeAccountName(accountName);
-    Account account = accountRepository.findByAccountNameIgnoreCase(normalizedAccountName);
+    Account account = accountRepository.findByNormalizedName(normalizedAccountName);
     if (account == null) {
       throw new EntityNotFoundException("Account not found: " + accountName);
     }
@@ -51,6 +51,7 @@ public class TransactionHistoryService {
     Pageable pageable = PageRequest.of(page, size);
     Page<TransactionLine> transactionLinesPage = transactionLineRepository.findByAccountIdWithDateRange(
         account.getId(), effectiveStartDate.atStartOfDay(), effectiveEndDate.atTime(23, 59, 59), pageable);
+        
     BigDecimal openingBalance = calculateOpeningBalance(account, effectiveStartDate);
     List<TransactionHistoryItemDto> transactions = buildTransactionHistory(
         transactionLinesPage.getContent(), account.getAccountType(), openingBalance);
