@@ -32,3 +32,5 @@ spring:
     out-of-order: true
     validate-on-migrate: true
     validate-migration-naming: true
+    clean-disabled: false
+    clean-on-validation-error: true
