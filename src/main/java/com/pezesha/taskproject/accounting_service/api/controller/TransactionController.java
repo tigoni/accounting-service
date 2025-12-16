@@ -79,6 +79,12 @@ public class TransactionController {
       @PathVariable UUID uuid,
       @RequestBody @Valid TransactionRequestDto transactionDto) {
     TransactionResponseDto transactionResponseDto = null;
+        // check idempotency key is valid
+    if (idempotencyKey == null || idempotencyKey.isBlank()) {
+      return new ResponseEntity<>(new ApiResponse<>(
+          false, "Idempotency key is required", null, List.of("Idempotency key is required")),
+          HttpStatus.BAD_REQUEST);
+    }
     try {
       log.debug("Creating loan repayment transaction with accounts and lines: {}",
           transactionDto.getTransactionLines().stream()
